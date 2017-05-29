@@ -1,5 +1,5 @@
 /*
-* @providesModule Example
+* @providesModule AQ-Example
 */
 
 export default {

@@ -1,12 +1,12 @@
 const _ = require("lodash");
-const fs = require('fs');
-const resolvePath = require('path').resolve;
+const fs = require("fs");
+const resolvePath = require("path").resolve;
 
 const blacklist = {
-    "__tests__": true,
+    __tests__: true,
     "react-packager": true,
-    "androidTest": true,
-}
+    androidTest: true
+};
 
 const providesModulePattern = /@providesModule\s(\S+)/;
 
@@ -32,9 +32,9 @@ function discover(options) {
 function _walkTree(path) {
     const stat = fs.statSync(path);
 
-    if (stat.isDirectory()){
-        const entries = fs.readdirSync(path)
-        
+    if (stat.isDirectory()) {
+        const entries = fs.readdirSync(path);
+
         _.each(entries, entry => {
             if (!blacklist[entry]) {
                 this._walkTree(resolvePath(path, entry));
@@ -48,7 +48,7 @@ function _walkTree(path) {
         return;
     }
 
-    const content = fs.readFileSync(path, 'utf-8');
+    const content = fs.readFileSync(path, "utf-8");
     const parts = content.match(providesModulePattern);
     if (!parts) {
         return;
@@ -70,4 +70,3 @@ function _walkTree(path) {
 
     this.modules[moduleName] = path;
 }
-

@@ -4,15 +4,15 @@ const root = require("root-path");
 const providesModuleHelper = require("./providesModuleHelper.js");
 
 module.exports = {
+    target: "node",
     entry: "./server/src/index.js",
     output: {
         path: path.join(__dirname, "build"),
         filename: "index.js"
     },
-    target: "node",
     node: {
         __dirname: false,
-        __filename: false,
+        __filename: false
     },
     resolve: {
         alias: providesModuleHelper.discover({
