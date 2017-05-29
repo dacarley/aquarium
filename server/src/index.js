@@ -1,7 +1,17 @@
-import _ from "lodash";
-import Example from "AQ-Example";
+import Dimmer from "AQ-Dimmer";
+import ColorBrightnesses from "AQ-ColorBrightnesses";
+import Logger from "AQ-Logger";
 
-/* eslint-disable no-console */
+main();
 
-console.log(Example);
-console.log(_.map([1, 2, 3], n => n * n));
+async function main() {
+    try {
+        await Dimmer.connect();
+        Logger.info("Connected to dimmer");
+
+        await Dimmer.setColorBrightnesses(ColorBrightnesses);
+    } catch (err) {
+        Logger.error(err);
+        process.exit(-1);
+    }
+}

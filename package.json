@@ -29,8 +29,10 @@
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
     "haste-resolver-webpack-plugin": "^0.2.2",
+    "i2c-bus": "^1.2.2",
     "json-loader": "^0.5.4",
     "lodash": "^4.17.4",
+    "pca9685": "^4.0.3",
     "root-path": "^0.2.0",
     "webpack": "^2.6.1"
   }
