@@ -27,7 +27,6 @@
         "no-shadow": 0,
         "import/no-unresolved": [2, { ignore: ['^AQ-'] }],
         "import/no-extraneous-dependencies": 0,
-        "jsx-a11y/anchor-has-content": ['error', ['']],
         "react/require-extension": 0,
         "react/jsx-filename-extension": 0,
         "react/jsx-indent": [2, 4],
