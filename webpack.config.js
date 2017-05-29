@@ -1,6 +1,5 @@
 const _ = require("lodash");
 const fs = require("fs");
-const webpack = require("webpack");
 const path = require("path");
 const root = require("root-path");
 const providesModuleHelper = require("./providesModuleHelper.js");
@@ -18,9 +17,10 @@ module.exports = {
         __dirname: false,
         __filename: false
     },
-    externals: (context, request, cb) => {
+    externals: (_context, request, cb) => {
         if (_.includes(nodeModules, request)) {
-            cb(null, "commonjs " + request);
+            cb(null, `commonjs ${request}`);
+
             return;
         }
 
