@@ -28,12 +28,18 @@ async function connect() {
                 return reject(new Error("Could not connect to 9685 on i2c"));
             }
 
+            Logger.info("Connected to dimmer");
+
             resolve();
         });
     });
 }
 
 async function setColorBrightnesses(colorBrightnesses) {
+    if (!this.pwm) {
+        throw new Error("The dimmer is not yet connected");
+    }
+
     const setDutyCycle = Promisify(this.pwm.setDutyCycle, this.pwm);
 
     const channelSettings = _.flatMap(colorBrightnesses, (brightness, color) => {
@@ -48,7 +54,7 @@ async function setColorBrightnesses(colorBrightnesses) {
     });
 
     await PromiseHelper.each(channelSettings, async (settings) => {
-        const percentage = Math.round(settings.brightness * 100);
+        const percentage = _.round(settings.brightness * 100, 2);
 
         Logger.info(`Setting ${settings.name} to ${percentage}% brightness`);
 

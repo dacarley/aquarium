@@ -1,17 +1,15 @@
-import Dimmer from "AQ-Dimmer";
-import ColorBrightnesses from "AQ-ColorBrightnesses";
 import Logger from "AQ-Logger";
+import MainLoop from "AQ-MainLoop";
 
 main();
 
 async function main() {
     try {
-        await Dimmer.connect();
-        Logger.info("Connected to dimmer");
-
-        await Dimmer.setColorBrightnesses(ColorBrightnesses);
+        MainLoop.run();
     } catch (err) {
-        Logger.error(err);
+        Logger.error("A fatal error occurred.", {
+            err: err.stack
+        });
         process.exit(-1);
     }
 }
