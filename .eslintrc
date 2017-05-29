@@ -25,7 +25,7 @@
         "max-len": ["error", 200, 4],
         "consistent-return": 0,
         "no-shadow": 0,
-        "import/no-unresolved": [2, { ignore: ['^AQ-', '^react-native-linear-gradient$'] }],
+        "import/no-unresolved": [2, { ignore: ['^AQ-'] }],
         "import/no-extraneous-dependencies": 0,
         "jsx-a11y/anchor-has-content": ['error', ['']],
         "react/require-extension": 0,
@@ -48,14 +48,6 @@
         "beforeAll": false,
         "beforeEach": false,
         "describe": false,
-        "it": false,
-        "fetch": false,
-        "require": false,
-        "jest": false,
-        "expect": false,
-        "spyOn": false,
-        "requestAnimationFrame": false,
-        "jasmine": false,
-        "window": false
+        "it": false
     }
 }

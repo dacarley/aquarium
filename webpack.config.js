@@ -1,7 +1,11 @@
+const _ = require("lodash");
+const fs = require("fs");
 const webpack = require("webpack");
 const path = require("path");
 const root = require("root-path");
 const providesModuleHelper = require("./providesModuleHelper.js");
+
+const nodeModules = _.filter(fs.readdirSync("node_modules"), dir => dir !== ".bin");
 
 module.exports = {
     target: "node",
@@ -13,6 +17,14 @@ module.exports = {
     node: {
         __dirname: false,
         __filename: false
+    },
+    externals: (context, request, cb) => {
+        if (_.includes(nodeModules, request)) {
+            cb(null, "commonjs " + request);
+            return;
+        }
+
+        cb();
     },
     resolve: {
         alias: providesModuleHelper.discover({

@@ -59,8 +59,8 @@ function _walkTree(path) {
     if (existingModulePath && existingModulePath !== path) {
         const lines = [
             `Duplicated module ${moduleName}`,
-            existingModulePath,
-            path
+            `    ${existingModulePath}`,
+            `    ${path}`
         ];
 
         console.error(lines.join("\n"));
