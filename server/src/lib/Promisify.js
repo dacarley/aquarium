@@ -12,13 +12,7 @@ export default (func, context) => {
                     return reject(err);
                 }
 
-                // If there's just a single "data" argument, resolve with that
-                if (args.length === 1) {
-                    return resolve(args[0]);
-                }
-
-                // Otherwise, resolve with the entire array of data args.
-                return resolve(args);
+                resolve(...args);
             });
 
             func.apply(context, callArgs);
