@@ -2,27 +2,25 @@ const _ = require("lodash");
 const fs = require("fs");
 const resolvePath = require("path").resolve;
 
-const blacklist = {
-    __tests__: true,
-    "react-packager": true,
-    androidTest: true
-};
+/* eslint-disable no-console */
 
 const providesModulePattern = /@providesModule\s(\S+)/;
 
 module.exports = {
     discover,
 
-    _walkTree
+    _walkTree,
+    _isOnBlacklist
 };
 
 function discover(options) {
+    this.options = options;
     this.modules = {};
 
     console.log("Crawling File System");
     console.time("Crawling File System (Elapsed)");
 
-    _.each(options.roots, path => this._walkTree(path));
+    _.each(this.options.roots, path => this._walkTree(path));
 
     console.timeEnd("Crawling File System (Elapsed)");
 
@@ -36,7 +34,7 @@ function _walkTree(path) {
         const entries = fs.readdirSync(path);
 
         _.each(entries, entry => {
-            if (!blacklist[entry]) {
+            if (!this._isOnBlacklist(entry)) {
                 this._walkTree(resolvePath(path, entry));
             }
         });
@@ -69,4 +67,10 @@ function _walkTree(path) {
     }
 
     this.modules[moduleName] = path;
+}
+
+function _isOnBlacklist(path) {
+    return _.some(this.options.blacklist, entry => {
+        return !_.isNil(path.match(entry));
+    });
 }
