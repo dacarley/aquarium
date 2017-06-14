@@ -4,12 +4,14 @@ import _ from "lodash";
 import i2cBus from "i2c-bus";
 import { Pca9685Driver } from "pca9685";
 import Promisify from "AQ-Promisify";
-import LedChannels from "AQ-LedChannels";
+import Config from "AQ-Config";
 import PromiseHelper from "AQ-PromiseHelper";
+import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
 
 export default {
     connect,
+    disconnect,
 
     setColorBrightnesses
 };
@@ -28,11 +30,19 @@ async function connect() {
                 return reject(new Error("Could not connect to 9685 on i2c"));
             }
 
+            Shutdown.register(() => this.disconnect());
+
             Logger.info("Connected to dimmer");
 
             resolve();
         });
     });
+}
+
+async function disconnect() {
+    const allChannelsOff = Promisify(this.pwm.allChannelsOff, this.pwm);
+    await allChannelsOff();
+    this.pwm = undefined;
 }
 
 async function setColorBrightnesses(colorBrightnesses) {
@@ -43,7 +53,7 @@ async function setColorBrightnesses(colorBrightnesses) {
     const setDutyCycle = Promisify(this.pwm.setDutyCycle, this.pwm);
 
     const channelSettings = _.flatMap(colorBrightnesses, (brightness, color) => {
-        return _(LedChannels)
+        return _(Config.ledChannels)
             .pickBy((_channel, name) => name.startsWith(color))
             .map((channel, name) => ({
                 name,

@@ -1,0 +1,40 @@
+{
+    "dimmingSchedule": [
+        {
+            "timeOfDay": "6:00",
+            "colors": {
+                "RoyalBlue": 0.5,
+                "UV": 0.5,
+                "ColdWhite": 0.5,
+                "WarmWhite": 0.5,
+                "Red": 0,
+                "Green": 0,
+                "Blue": 0
+            }
+        },
+        {
+            "timeOfDay": "12:00",
+            "colors": {
+                "RoyalBlue": 0.5,
+                "UV": 0.5,
+                "ColdWhite": 0.5,
+                "WarmWhite": 0.5,
+                "Red": 0,
+                "Green": 0,
+                "Blue": 0
+            }
+        },
+        {
+            "timeOfDay": "18:00",
+            "colors": {
+                "RoyalBlue": 0.5,
+                "UV": 0.5,
+                "ColdWhite": 0.5,
+                "WarmWhite": 0.5,
+                "Red": 0,
+                "Green": 0,
+                "Blue": 0
+            }
+        }
+    ]
+}

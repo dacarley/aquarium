@@ -2,9 +2,11 @@
 
 import moment from "moment";
 import Config from "AQ-Config";
+import Shutdown from "AQ-Shutdown";
 
 export default {
     init,
+    shutdown,
     manageWaterLevel,
 
     _checkWaterLevel,
@@ -15,6 +17,11 @@ export default {
 
 function init() {
     this.pumpOnTimestamp = undefined;
+
+    Shutdown.register(() => this.shutdown());
+}
+
+function shutdown() {
 }
 
 async function manageWaterLevel() {
