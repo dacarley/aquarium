@@ -71,7 +71,9 @@ async function setColorBrightnesses(colorBrightnesses) {
     });
 
     Logger.info("Setting channels", {
-        channelSettings
+        channelSettings: _.map(channelSettings, settings => {
+            return `${settings.name} (${settings.channel}): ${settings.percentage}% (${settings.brightness})`;
+        })
     });
 
     await PromiseHelper.each(channelSettings, async (settings) => {
