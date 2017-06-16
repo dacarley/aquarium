@@ -4,16 +4,17 @@ import _ from "lodash";
 import moment from "moment";
 import root from "root-path";
 import AsyncFile from "AQ-AsyncFile";
+import Logger from "AQ-Logger";
 
 export default {
     get,
 
     _load,
-    _loadJson,
+    _createIfMissing,
+    _loadIfChanged,
 
-    _cache: {
-        modificationTime: "1975-11-23T00:00:00.000Z"
-    }
+    _data: undefined,
+    _timestamp: moment("1975-11-23T00:00:00.000Z")
 };
 
 async function get(path) {
@@ -23,26 +24,34 @@ async function get(path) {
 }
 
 async function _load() {
-    const path = root("userSettings.json");
-    const stats = await AsyncFile.stat(path);
+    await this._createIfMissing();
+    await this._loadIfChanged();
 
-    const exists = await AsyncFile.exists(path);
-    if (!exists) {
-        const defaultPath = root("defaultUserSettings.json");
-        const defaultUserSettings = await this._loadJson(defaultPath);
-        await AsyncFile.writeFile(path, JSON.stringify(defaultUserSettings, null, 4));
-    }
-
-    const modificationTime = moment(stats.mtime);
-    if (modificationTime.isAfter(this._cache.modificationTime)) {
-        this._cache.data = await this._loadJson(path);
-    }
-
-    return this._cache.data;
+    return this._data;
 }
 
-async function _loadJson(path) {
-    const json = await AsyncFile.readFile(path, "utf-8");
+async function _createIfMissing() {
+    const path = root("userSettings.json");
+    const exists = await AsyncFile.exists(path);
+    if (exists) {
+        return;
+    }
 
-    return JSON.parse(json);
+    const defaultPath = root("defaultUserSettings.json");
+    const defaultUserSettings = await this._loadJson(defaultPath);
+    await AsyncFile.writeFile(path, JSON.stringify(defaultUserSettings, null, 4));
+}
+
+async function _loadIfChanged() {
+    const path = root("userSettings.json");
+    const stats = await AsyncFile.stat(path);
+    if (this._timestamp.isAfter(stats.mtime)) {
+        return;
+    }
+
+    Logger.info("Loading settings");
+    const json = await AsyncFile.readFile(path, "utf-8");
+    this._data = JSON.parse(json);
+
+    Logger.info("Loaded settings");
 }
