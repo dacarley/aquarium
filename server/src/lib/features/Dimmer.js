@@ -8,6 +8,7 @@ import Config from "AQ-Config";
 import PromiseHelper from "AQ-PromiseHelper";
 import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
+import MapBuilder from "AQ-MapBuilder";
 
 export default {
     connect,
@@ -47,7 +48,7 @@ async function disconnect() {
 
 async function setColorBrightnesses(colorBrightnesses) {
     if (!this.pwm) {
-        throw new Error("The dimmer is not yet connected");
+        Logger.throw("The dimmer is not yet connected");
     }
 
     const setDutyCycle = Promisify(this.pwm.setDutyCycle, this.pwm);
@@ -55,19 +56,25 @@ async function setColorBrightnesses(colorBrightnesses) {
     const channelSettings = _.flatMap(colorBrightnesses, (brightness, color) => {
         return _(Config.ledChannels)
             .pickBy((_channel, name) => name.startsWith(color))
-            .map((channel, name) => ({
-                name,
-                channel,
-                brightness
-            }))
+            .map((channel, name) => {
+                const percentage = _.round(brightness * 100, 2);
+                const compensatedBrightness = _.round(Math.max(1.0 / 4096, brightness ** 3), 4);
+
+                return {
+                    name,
+                    channel,
+                    percentage,
+                    brightness: compensatedBrightness
+                };
+            })
             .value();
     });
 
+    Logger.info("Setting channels", {
+        channelSettings
+    });
+
     await PromiseHelper.each(channelSettings, async (settings) => {
-        const percentage = _.round(settings.brightness * 100, 2);
-
-        Logger.info(`Setting ${settings.name} to ${percentage}% brightness`);
-
         await setDutyCycle(settings.channel, settings.brightness, 0);
     });
 }

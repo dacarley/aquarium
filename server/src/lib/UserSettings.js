@@ -49,6 +49,8 @@ async function _loadIfChanged() {
         return;
     }
 
+    this._timestamp = moment();
+
     Logger.info("Loading settings");
     const json = await AsyncFile.readFile(path, "utf-8");
     this._data = JSON.parse(json);

@@ -3,6 +3,7 @@
 import Config from "AQ-Config";
 import Dimmer from "AQ-Dimmer";
 import Logger from "AQ-Logger";
+import LogStreamingLoggly from "AQ-LogStreamingLoggly";
 import DimmerScheduler from "AQ-DimmerScheduler";
 import AutoTopOff from "AQ-AutoTopOff";
 
@@ -13,6 +14,8 @@ export default {
 };
 
 async function run() {
+    LogStreamingLoggly.init();
+
     Logger.info("Connecting to dimmer");
     await Dimmer.connect();
     Logger.info("Initializing AutoTopOff");
@@ -23,7 +26,6 @@ async function run() {
 }
 
 async function _loop() {
-    Logger.info("Running the loop");
     const colorBrightnesses = await DimmerScheduler.getColorBrightnesses();
     await Dimmer.setColorBrightnesses(colorBrightnesses);
 

@@ -1,7 +1,7 @@
 // @providesModule AQ-Config
 
 export default {
-    mainLoopDelay: 5 * 1000,
+    mainLoopDelay: 15 * 1000,
     pumpOnTimeSeconds: 60,
     ledChannels: {
         RoyalBlue1: 0,
