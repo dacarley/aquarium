@@ -8,7 +8,6 @@ import Config from "AQ-Config";
 import PromiseHelper from "AQ-PromiseHelper";
 import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
-import MapBuilder from "AQ-MapBuilder";
 
 export default {
     connect,
@@ -58,7 +57,7 @@ async function setColorBrightnesses(colorBrightnesses) {
             .pickBy((_channel, name) => name.startsWith(color))
             .map((channel, name) => {
                 const percentage = _.round(brightness * 100, 2);
-                const compensatedBrightness = _.round(Math.max(1.0 / 4096, brightness ** 3), 4);
+                const compensatedBrightness = _.round(Math.max(1.0 / 4096, brightness ** 2), 4);
 
                 return {
                     name,

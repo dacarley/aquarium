@@ -11,7 +11,7 @@ module.exports = {
     entry: "./server/src/index.js",
     output: {
         path: path.join(__dirname, "build"),
-        filename: "index.js"
+        filename: "aquarium.js"
     },
     node: {
         __dirname: false,
