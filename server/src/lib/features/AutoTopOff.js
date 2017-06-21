@@ -1,5 +1,6 @@
 // @providesModule AQ-AutoTopOff
 
+import _ from "lodash";
 import moment from "moment";
 import Config from "AQ-Config";
 import Shutdown from "AQ-Shutdown";
@@ -12,9 +13,14 @@ export default {
     update,
 
     _shutdown,
+    _isPumpOn,
+    _canTurnPumpOn,
     _turnPumpOn,
     _turnPumpOff,
-    _enforceMaxPumpRuntime
+    _enforceMaxPumpRuntime,
+
+    _pumpOnTimestamp: undefined,
+    _pumpOffTimestamp: moment("1975-11-23T00:00:00.000Z")
 };
 
 function init() {
@@ -44,49 +50,75 @@ async function update() {
     // }
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.alert) {
-        Logger.alert("The reservoir is getting low", {
+        Logger.alertHourly("The reservoir is getting low", {
             waterLevels
         });
     }
 
-    if (waterLevels.sump > Config.autoTopOff.sump.max) {
-        Logger.info("Sump is above its max, turning off.");
+    const isPumpOn = this._isPumpOn();
+
+    if (isPumpOn && waterLevels.sump > Config.autoTopOff.sump.max) {
         this._turnPumpOff();
+        Logger.info("Sump is above its max, turned pump off.");
     }
 
-    if (waterLevels.sump < Config.autoTopOff.sump.min) {
-        Logger.info("Sump is below its min, turning on.");
-        this._turnPumpOn();
+    if (!isPumpOn && waterLevels.sump < Config.autoTopOff.sump.min) {
+        this._turnPumpOn(() => {
+            Logger.info("Sump is below its min, turned pump on.");
+        });
     }
 
     this._enforceMaxPumpRuntime();
 }
 
-function _turnPumpOn() {
-    this.pumpOnTimestamp = moment().toISOString();
+function _isPumpOn() {
+    return !_.isNil(this._pumpOnTimestamp);
+}
+
+function _canTurnPumpOn() {
+    if (this._isPumpOn()) {
+        return false;
+    }
+
+    const offSeconds = moment().diff(this._pumpOffTimestamp, "seconds");
+
+    return (offSeconds >= Config.autoTopOff.pumpCooldownTimeSeconds);
+}
+
+function _turnPumpOn(callback) {
+    if (this._isPumpOn()) {
+        return;
+    }
+
+    if (!this._canTurnPumpOn()) {
+        return;
+    }
+
+    this._pumpOnTimestamp = moment().toISOString();
+    this._pumpOffTimestamp = undefined;
     this.pump.digitalWrite(1);
+
+    callback();
 }
 
 function _turnPumpOff() {
-    this.pumpOnTimestamp = undefined;
+    if (!this._isPumpOn()) {
+        return;
+    }
+
+    this._pumpOnTimestamp = undefined;
+    this._pumpOffTimestamp = moment().toISOString();
     this.pump.digitalWrite(0);
 }
 
 function _enforceMaxPumpRuntime() {
-    Logger.info("Checking pump runtime");
-    if (!this.pumpOnTimestamp) {
-        Logger.info("Pump is not on");
-
+    if (!this._isPumpOn()) {
         return;
     }
 
-    const diffSeconds = moment().diff(this.pumpOnTimestamp, "seconds");
-    if (diffSeconds >= Config.pumpOnTimeSeconds) {
+    const pumpRunTimeSeconds = moment().diff(this._pumpOnTimestamp, "seconds");
+    if (pumpRunTimeSeconds >= Config.autoTopOff.maxPumpRunTimeSeconds) {
         Logger.info("Pump has been on long enough, turning off");
         this._turnPumpOff();
-
-        return;
     }
-
-    Logger.info("Pump can continue running");
 }

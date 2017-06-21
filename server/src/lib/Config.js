@@ -1,7 +1,6 @@
 // @providesModule AQ-Config
 
 export default {
-    pumpOnTimeSeconds: 60,
     ledChannels: {
         RoyalBlue1: 0,
         RoyalBlue2: 1,
@@ -25,9 +24,11 @@ export default {
     },
     autoTopOff: {
         pumpPin: 26,
+        maxPumpRunTimeSeconds: 60 * 15,
+        pumpCooldownTimeSeconds: 60 * 5,
         sump: {
             min: 8,
-            max: 9
+            max: 8.25
         },
         reservoir: {
             min: 2,
