@@ -37,11 +37,11 @@ async function update() {
     const waterLevels = await WaterSensors.readWaterLevels();
     Logger.info("waterLevels", waterLevels);
 
-    if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
-        this._turnPumpOff();
-
-        return;
-    }
+    // if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
+    //     this._turnPumpOff();
+    //
+    //     return;
+    // }
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.alert) {
         Logger.alert("The reservoir is getting low", {
@@ -50,10 +50,12 @@ async function update() {
     }
 
     if (waterLevels.sump > Config.autoTopOff.sump.max) {
+        Logger.info("Sump is above its max, turning off.");
         this._turnPumpOff();
     }
 
     if (waterLevels.sump < Config.autoTopOff.sump.min) {
+        Logger.info("Sump is below its min, turning on.");
         this._turnPumpOn();
     }
 
@@ -71,12 +73,20 @@ function _turnPumpOff() {
 }
 
 function _enforceMaxPumpRuntime() {
+    Logger.info("Checking pump runtime");
     if (!this.pumpOnTimestamp) {
+        Logger.info("Pump is not on");
+
         return;
     }
 
     const diffSeconds = moment().diff(this.pumpOnTimestamp, "seconds");
     if (diffSeconds >= Config.pumpOnTimeSeconds) {
+        Logger.info("Pump has been on long enough, turning off");
         this._turnPumpOff();
+
+        return;
     }
+
+    Logger.info("Pump can continue running");
 }

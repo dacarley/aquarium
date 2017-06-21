@@ -143,7 +143,7 @@ async function readSingle(channel, pga = 6144, sps = 250) {
     // Wait for the ADC conversion to complete
     // The minimum delay depends on the sps: delay >= 1/sps
     // We add 0.1ms to be sure
-    const delay = 1000 / sps;
+    const delay = (1000 / sps) + 10;
     await Delay.wait(delay);
 
     // Read the conversion results

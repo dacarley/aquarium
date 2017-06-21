@@ -56,8 +56,6 @@ async function _readWaterSensor(sensor, vIn) {
     sensorLevels.values.push(inches);
     const mean = _.mean(sensorLevels.values);
     sensorLevels.runningAverage = _.round(mean, 2);
-
-    console.log(sensor, sensorLevels);
 }
 
 async function _readRawWaterSensor(sensor, vIn) {
