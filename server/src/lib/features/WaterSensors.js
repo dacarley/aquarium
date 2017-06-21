@@ -11,18 +11,15 @@ export default {
 
     _readWaterSensor,
     _readRawWaterSensor,
-    _standardDeviation,
 
     _waterLevels: {
         sump: {
             values: [],
-            runningAverage: 0,
-            standardDeviation: 0
+            runningAverage: 0
         },
         reservoir: {
             values: [],
-            runningAverage: 0,
-            standardDeviation: 0
+            runningAverage: 0
         }
     }
 };
@@ -47,30 +44,20 @@ async function _readWaterSensor(sensor, vIn) {
     const inches = await this._readRawWaterSensor(sensor, vIn);
     const sensorLevels = this._waterLevels[sensor];
 
-    if (sensorLevels.values.length >= Config.waterSensors.minStabilityReadings) {
-        const diff = Math.abs(inches - sensorLevels.runningAverage);
-        if (diff > Config.waterSensors.maxChange && diff > sensorLevels.standardDeviation) {
-            Logger.info(`Discarding out-of-range value for ${sensor}.`, {
-                inches,
-                sensorLevels
-            });
+    if (sensorLevels.values.length >= Config.waterSensors.sampleWindowSize) {
+        sensorLevels.values.shift();
 
+        const diff = Math.abs(inches - sensorLevels.runningAverage);
+        if (diff > (sensorLevels.runningAverage * 0.10)) {
             return;
         }
-
-        sensorLevels.values.shift();
     }
 
     sensorLevels.values.push(inches);
-    sensorLevels.runningAverage = _.mean(sensorLevels.values);
-    sensorLevels.standardDeviation = this._standardDeviation(sensorLevels.values);
-}
+    const mean = _.mean(sensorLevels.values);
+    sensorLevels.runningAverage = _.round(mean, 2);
 
-function _standardDeviation(data) {
-    const mean = _.mean(data);
-    const sumOfSquares = _.sumBy(data, value => (value - mean) ** 2);
-
-    return Math.sqrt(sumOfSquares / data.length);
+    console.log(sensor, sensorLevels);
 }
 
 async function _readRawWaterSensor(sensor, vIn) {

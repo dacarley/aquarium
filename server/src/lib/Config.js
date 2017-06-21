@@ -16,8 +16,7 @@ export default {
         Blue: 14
     },
     waterSensors: {
-        minStabilityReadings: 20,
-        maxChange: 0.01,
+        sampleWindowSize: 20,
         a2d: {
             vIn: 0,
             sump: 1,
