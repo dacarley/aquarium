@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && pm2 restart aquarium",
+    "start": "npm run build && sudo pm2 restart aquarium",
     "build": "webpack --progress",
     "lint": "eslint --max-warnings 0 server/src"
   },
