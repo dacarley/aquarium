@@ -25,10 +25,10 @@ export default {
     autoTopOff: {
         pumpPin: 26,
         maxPumpRunTimeSeconds: 60 * 15,
-        pumpCooldownTimeSeconds: 60 * 5,
+        pumpCooldownTimeSeconds: 60 * 15,
         sump: {
-            min: 8,
-            max: 8.25
+            min: 10,
+            max: 10.25
         },
         reservoir: {
             min: 2,
