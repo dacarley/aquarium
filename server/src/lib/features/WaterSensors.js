@@ -34,7 +34,6 @@ function init() {
 
 async function readWaterLevels() {
     const vIn = await ADS1x15.readSingle(Config.waterSensors.a2d.vIn, 6144, 64);
-
     await this._readWaterSensor("sump", vIn);
     await this._readWaterSensor("reservoir", vIn);
 
@@ -45,7 +44,7 @@ async function readWaterLevels() {
 }
 
 async function _readWaterSensor(sensor, vIn) {
-    const inches = this._readRawWaterSensor(sensor, vIn);
+    const inches = await this._readRawWaterSensor(sensor, vIn);
     const sensorLevels = this._waterLevels[sensor];
 
     if (sensorLevels.values.length >= Config.waterSensors.minStabilityReadings) {

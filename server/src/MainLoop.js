@@ -2,6 +2,7 @@
 
 import Delay from "AQ-Delay";
 import Dimmer from "AQ-Dimmer";
+import Shutdown from "AQ-Shutdown";
 import LogStreamingLoggly from "AQ-LogStreamingLoggly";
 import AutoTopOff from "AQ-AutoTopOff";
 
@@ -18,6 +19,10 @@ async function run() {
     await LogStreamingLoggly.init();
     await Dimmer.init();
     await AutoTopOff.init();
+
+    // This should be the last thing initialized,
+    // to guarantee that we can capture the signals we want to capture.
+    await Shutdown.init();
 
     while (true) {
         await this._loop();
