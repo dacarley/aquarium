@@ -1,11 +1,12 @@
 // @providesModule AQ-MainLoop
 
-import Config from "AQ-Config";
+import Delay from "AQ-Delay";
 import Dimmer from "AQ-Dimmer";
-import Logger from "AQ-Logger";
 import LogStreamingLoggly from "AQ-LogStreamingLoggly";
-import DimmerScheduler from "AQ-DimmerScheduler";
 import AutoTopOff from "AQ-AutoTopOff";
+
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-await-in-loop */
 
 export default {
     run,
@@ -14,24 +15,18 @@ export default {
 };
 
 async function run() {
-    LogStreamingLoggly.init();
-
-    Logger.info("Connecting to dimmer");
-    await Dimmer.connect();
-    Logger.info("Initializing AutoTopOff");
+    await LogStreamingLoggly.init();
+    await Dimmer.init();
     await AutoTopOff.init();
 
-    Logger.info("Starting the loop");
-    await this._loop();
+    while (true) {
+        await this._loop();
+    }
 }
 
 async function _loop() {
-    const colorBrightnesses = await DimmerScheduler.getColorBrightnesses();
-    await Dimmer.setColorBrightnesses(colorBrightnesses);
+    await Dimmer.update();
+    await AutoTopOff.update();
 
-    await AutoTopOff.manageWaterLevel();
-
-    setTimeout(() => {
-        this._loop();
-    }, Config.mainLoopDelay);
+    await Delay.wait(1000);
 }

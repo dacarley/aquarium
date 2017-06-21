@@ -12,6 +12,7 @@ export default {
     _load,
     _createIfMissing,
     _loadIfChanged,
+    _loadJSON,
 
     _data: undefined,
     _timestamp: moment("1975-11-23T00:00:00.000Z")
@@ -38,7 +39,7 @@ async function _createIfMissing() {
     }
 
     const defaultPath = root("defaultUserSettings.json");
-    const defaultUserSettings = await this._loadJson(defaultPath);
+    const defaultUserSettings = await this._loadJSON(defaultPath);
     await AsyncFile.writeFile(path, JSON.stringify(defaultUserSettings, null, 4));
 }
 
@@ -52,8 +53,12 @@ async function _loadIfChanged() {
     this._timestamp = moment();
 
     Logger.info("Loading settings");
-    const json = await AsyncFile.readFile(path, "utf-8");
-    this._data = JSON.parse(json);
-
+    this._data = this._loadJSON(path);
     Logger.info("Loaded settings");
+}
+
+async function _loadJSON(path) {
+    const json = await AsyncFile.readFile(path, "utf-8");
+
+    return JSON.parse(json);
 }

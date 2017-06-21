@@ -1,7 +1,7 @@
 {
-    "dimmingSchedule": [
-        {
-            "timeOfDay": "6:00",
+    "dimmingSchedule": {
+        "Sunrise": {
+            "timeOfDay": "6:00am",
             "colors": {
                 "RoyalBlue": 0.5,
                 "UV": 0.5,
@@ -12,8 +12,8 @@
                 "Blue": 0
             }
         },
-        {
-            "timeOfDay": "12:00",
+        "Noon": {
+            "timeOfDay": "12:00pm",
             "colors": {
                 "RoyalBlue": 0.5,
                 "UV": 0.5,
@@ -24,8 +24,8 @@
                 "Blue": 0
             }
         },
-        {
-            "timeOfDay": "18:00",
+        "Sunset": {
+            "timeOfDay": "6:00pm",
             "colors": {
                 "RoyalBlue": 0.5,
                 "UV": 0.5,
@@ -36,5 +36,5 @@
                 "Blue": 0
             }
         }
-    ]
+    }
 }

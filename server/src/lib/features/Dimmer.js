@@ -1,6 +1,7 @@
 // @providesModule AQ-Dimmer
 
 import _ from "lodash";
+import moment from "moment";
 import i2cBus from "i2c-bus";
 import { Pca9685Driver } from "pca9685";
 import Promisify from "AQ-Promisify";
@@ -8,15 +9,19 @@ import Config from "AQ-Config";
 import PromiseHelper from "AQ-PromiseHelper";
 import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
+import DimmerScheduler from "AQ-DimmerScheduler";
 
 export default {
-    connect,
-    disconnect,
+    init,
+    update,
 
-    setColorBrightnesses
+    _disconnect,
+    _setColorBrightnesses,
+
+    _lastUpdateTimestamp: moment("1975-11-23T00:00:00.000Z")
 };
 
-async function connect() {
+async function init() {
     const options = {
         i2c: i2cBus.openSync(1),
         address: 0x40,
@@ -24,13 +29,15 @@ async function connect() {
         debug: false
     };
 
+    Logger.info("Connecting to dimmer");
+
     return new Promise((resolve, reject) => {
         this.pwm = new Pca9685Driver(options, (err) => {
             if (err) {
                 return reject(new Error("Could not connect to 9685 on i2c"));
             }
 
-            Shutdown.register(() => this.disconnect());
+            Shutdown.register(() => this._disconnect());
 
             Logger.info("Connected to dimmer");
 
@@ -39,13 +46,24 @@ async function connect() {
     });
 }
 
-async function disconnect() {
+async function _disconnect() {
     const allChannelsOff = Promisify(this.pwm.allChannelsOff, this.pwm);
     await allChannelsOff();
     this.pwm = undefined;
 }
 
-async function setColorBrightnesses(colorBrightnesses) {
+async function update() {
+    const now = moment();
+    if (now.diff(this._lastUpdateTimestamp, "seconds") < 15) {
+        return;
+    }
+
+    this._lastUpdateTimestamp = now;
+    const colorBrightnesses = await DimmerScheduler.getColorBrightnesses();
+    await this._setColorBrightnesses(colorBrightnesses);
+}
+
+async function _setColorBrightnesses(colorBrightnesses) {
     if (!this.pwm) {
         Logger.throw("The dimmer is not yet connected");
     }
