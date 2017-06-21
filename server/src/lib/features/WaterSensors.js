@@ -30,9 +30,15 @@ function init() {
 }
 
 async function readWaterLevels() {
-    const vIn = await ADS1x15.readSingle(Config.waterSensors.a2d.vIn, 6144, 64);
-    await this._readWaterSensor("sump", vIn);
-    await this._readWaterSensor("reservoir", vIn);
+    try {
+        const vIn = await ADS1x15.readSingle(Config.waterSensors.a2d.vIn, 6144, 64);
+        await this._readWaterSensor("sump", vIn);
+        await this._readWaterSensor("reservoir", vIn);
+    } catch (err) {
+        Logger.alert("Caught an error reading sensors", {
+            err
+        });
+    }
 
     return {
         sump: this._waterLevels.sump.runningAverage,

@@ -31,7 +31,6 @@ function init() {
     });
 }
 
-
 function register(callback) {
     this._callbacks.push(callback);
 }
