@@ -35,6 +35,7 @@ function _shutdown() {
 
 async function update() {
     const waterLevels = WaterSensors.readWaterLevels();
+    console.log("waterLevels", waterLevels);
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
         this._turnPumpOff();

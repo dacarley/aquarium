@@ -1,4 +1,4 @@
-// @providesModule AQ-AutoTopOff
+// @providesModule AQ-WaterSensors
 
 import _ from "lodash";
 import Config from "AQ-Config";
@@ -33,7 +33,7 @@ function init() {
 }
 
 async function readWaterLevels() {
-    const vIn = await ADS1x15.readSingle(Config.autoTopOff.a2d.vIn, 6144, 64);
+    const vIn = await ADS1x15.readSingle(Config.waterSensors.a2d.vIn, 6144, 64);
 
     await this._readWaterSensor("sump", vIn);
     await this._readWaterSensor("reservoir", vIn);
