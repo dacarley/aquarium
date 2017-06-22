@@ -1,7 +1,9 @@
 // @providesModule AQ-Logger
 
+import _ from "lodash";
 import moment from "moment";
 import LogStreamingLoggly from "AQ-LogStreamingLoggly";
+import ErrorHelper from "AQ-ErrorHelper";
 
 const consoleFuncMap = {
     info: "info",
@@ -20,6 +22,8 @@ const service = {
     alertHourly,
 
     _log,
+    _processData,
+    _translateValues,
 
     _alertTimestamps: {}
 };
@@ -40,23 +44,48 @@ function alertHourly(msg, data) {
 }
 
 function _log(type, msg, data) {
+    const processedData = this._processData(data);
     const loggedMsg = data
-        ? `${msg}: ${JSON.stringify(data, null, 4)}`
+        ? `${msg}: ${JSON.stringify(processedData, null, 4)}`
         : msg;
-
-    LogStreamingLoggly.sendToLoggly({
-        timestamp: moment().toISOString(),
-        type,
-        msg,
-        data
-    });
 
     const func = consoleFuncMap[type];
 
     // eslint-disable-next-line no-console
     console[func](loggedMsg);
 
-    if (func === "throw") {
+    LogStreamingLoggly.sendToLoggly({
+        timestamp: moment().toISOString(),
+        type,
+        msg,
+        data: processedData
+    });
+
+    if (type === "throw") {
         throw new Error(loggedMsg);
     }
+}
+
+function _processData(data) {
+    if (!data) {
+        return undefined;
+    }
+
+    return _.mapValues(data, ::this._translateValues);
+}
+
+function _translateValues(value, _key) {
+    if (_.isError(value)) {
+        return ErrorHelper.toJSON(value);
+    }
+
+    if (moment.isMoment(value)) {
+        return value.toISOString();
+    }
+
+    if (_.isObjectLike(value)) {
+        return _.mapValues(_.toPlainObject(value), ::this._translateValues);
+    }
+
+    return value;
 }
