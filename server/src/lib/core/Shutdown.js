@@ -1,5 +1,6 @@
 // @providesModule AQ-Shutdown
 
+import _ from "lodash";
 import Logger from "AQ-Logger";
 import PromiseHelper from "AQ-PromiseHelper";
 
@@ -13,22 +14,25 @@ export default {
     _callbacks: []
 };
 
+const signals = [
+    "unhandledRejection",
+    "uncaughtException",
+    "SIGINT",
+    "SIGTERM",
+    "SIGQUIT",
+    "SIGABRT"
+];
+
 function init() {
-    process.on("unhandledRejection", async reason => {
-        Logger.info("Unhandled promise rejection!", {
-            reason
+    _.each(signals, signal => {
+        process.on("unhandledRejection", async reason => {
+            Logger.info("Shutdown", {
+                signal,
+                reason
+            });
+
+            await this._handleShutdown();
         });
-        await this._handleShutdown();
-    });
-
-    process.on("SIGINT", async () => {
-        Logger.info("Caught interrupt signal");
-        await this._handleShutdown();
-    });
-
-    process.on("SIGTERM", async () => {
-        Logger.info("Caught terminate signal");
-        await this._handleShutdown();
     });
 }
 
