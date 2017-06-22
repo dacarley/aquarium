@@ -16,13 +16,13 @@ export default {
 };
 
 async function run() {
-    // This should be the first thing initialized,
-    // to guarantee that we can capture the signals we want to capture.
-    await Shutdown.init();
-
     await LogStreamingLoggly.init();
     await Dimmer.init();
     await AutoTopOff.init();
+
+    // This should be the last thing initialized,
+    // to guarantee that we can capture the signals we want to capture.
+    await Shutdown.init();
 
     while (true) {
         await this._loop();

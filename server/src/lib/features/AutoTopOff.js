@@ -23,7 +23,7 @@ export default {
     _pumpOffTimestamp: moment("1975-11-23T00:00:00.000Z")
 };
 
-function init() {
+async function init() {
     WaterSensors.init();
     this.pump = new pigpio.Gpio(Config.autoTopOff.pumpPin, {
         pullUpDown: pigpio.Gpio.PUD_DOWN,
@@ -37,6 +37,8 @@ function init() {
 
 function _shutdown() {
     this._turnPumpOff();
+
+    pigpio.terminate();
 }
 
 async function update() {

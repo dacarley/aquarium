@@ -15,8 +15,9 @@ export default {
 
 function init() {
     process.on("unhandledRejection", async reason => {
-        console.log("Unhandled Promise Rejection!");
-        console.log(reason);
+        Logger.info("Unhandled promise rejection!", {
+            reason
+        });
         await this._handleShutdown();
     });
 
