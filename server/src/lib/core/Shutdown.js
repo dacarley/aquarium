@@ -15,6 +15,7 @@ export default {
 };
 
 const signals = [
+    "exit",
     "unhandledRejection",
     "uncaughtException",
     "SIGINT",
@@ -25,7 +26,7 @@ const signals = [
 
 function init() {
     _.each(signals, signal => {
-        process.on("unhandledRejection", async reason => {
+        process.once(signal, async reason => {
             Logger.info("Shutdown", {
                 signal,
                 reason
