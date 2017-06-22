@@ -104,10 +104,6 @@ function _turnPumpOn(callback) {
 }
 
 function _turnPumpOff() {
-    if (!this._isPumpOn()) {
-        return;
-    }
-
     this._pumpOnTimestamp = undefined;
     this._pumpOffTimestamp = moment().toISOString();
     this.pump.digitalWrite(0);
