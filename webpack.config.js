@@ -17,6 +17,7 @@ module.exports = {
         __dirname: false,
         __filename: false
     },
+    devtool: "sourcemap",
     externals: (_context, request, cb) => {
         if (_.includes(nodeModules, request)) {
             cb(null, `commonjs ${request}`);

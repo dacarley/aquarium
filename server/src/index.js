@@ -2,15 +2,7 @@ import Logger from "AQ-Logger";
 import MainLoop from "AQ-MainLoop";
 import Shutdown from "AQ-Shutdown";
 
-const oldExit = process.exit;
-process.exit = code => {
-    Logger.info("process.exit called", {
-        code,
-        error: new Error("process.exit call stack")
-    });
-
-    oldExit(code);
-};
+require("source-map-support").install();
 
 main();
 

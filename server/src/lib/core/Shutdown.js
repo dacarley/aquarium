@@ -14,8 +14,18 @@ export default {
     _callbacks: []
 };
 
+const originalProcessExit = process.exit;
+process.exit = code => {
+    Logger.info("process.exit called", {
+        code,
+        error: new Error("process.exit call stack")
+    });
+
+    originalProcessExit(code);
+};
+
 const signals = [
-    "exit",
+    "beforeExit",
     "unhandledRejection",
     "uncaughtException",
     "SIGINT",
@@ -46,5 +56,7 @@ async function _handleShutdown() {
         await callback();
     });
 
-    process.exit(-1);
+    console.log("Finished shudown.");
+
+    originalProcessExit(-1);
 }
