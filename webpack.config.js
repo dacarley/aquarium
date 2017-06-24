@@ -41,9 +41,17 @@ module.exports = {
                 loader: "babel-loader",
                 exclude: [/node_modules/],
                 query: {
-                    presets: ["es2015", "stage-0"],
-                    cacheDirectory: true,
-                    plugins: ["transform-runtime"]
+                    presets: [
+                        ["env", {
+                            targets: {
+                                node: "current"
+                            }
+                        }]
+                    ],
+                    plugins: [
+                        "transform-object-rest-spread"
+                    ],
+                    cacheDirectory: true
                 }
             },
             {

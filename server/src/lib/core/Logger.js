@@ -23,7 +23,7 @@ const service = {
 
     _log,
     _processData,
-    _translateValues,
+    _translateValue,
 
     _alertTimestamps: {}
 };
@@ -71,10 +71,10 @@ function _processData(data) {
         return undefined;
     }
 
-    return _.mapValues(data, ::this._translateValues);
+    return _.mapValues(data, value => this._translateValue(value));
 }
 
-function _translateValues(value, _key) {
+function _translateValue(value) {
     if (_.isError(value)) {
         return ErrorHelper.toJSON(value);
     }
@@ -84,7 +84,7 @@ function _translateValues(value, _key) {
     }
 
     if (_.isObjectLike(value)) {
-        return _.mapValues(_.toPlainObject(value), ::this._translateValues);
+        return this._processData(_.toPlainObject(value));
     }
 
     return value;
