@@ -117,6 +117,8 @@ export default {
 function connect() {
     this.address = 0x48;
     this.i2c = i2cBus.openSync(1);
+    this.writeWord = Promisify(this.i2c.writeWord, this.i2c);
+    this.readWord = Promisify(this.i2c.readWord, this.i2c);
 }
 
 // Gets a single-ended ADC reading from the specified channel in mV. \
@@ -131,14 +133,8 @@ async function readSingle(channel, pga = 6144, sps = 250) {
     // Set 'start single-conversion' bit
     config |= ADS1015_REG_CONFIG_OS_SINGLE;
 
-    const writeI2cBlock = Promisify(this.i2c.writeI2cBlock, this.i2c);
-    const readI2cBlock = Promisify(this.i2c.readI2cBlock, this.i2c);
-
     // Write config register to the ADC
-    const bytes = new Uint8Array(2);
-    bytes[0] = (config >> 8) & 0xFF;
-    bytes[1] = config & 0xFF;
-    await writeI2cBlock(this.address, ADS1015_REG_POINTER_CONFIG, 2, bytes);
+    await this.writeWord(this.address, ADS1015_REG_POINTER_CONFIG, encodeWord(config));
 
     // Wait for the ADC conversion to complete
     // The minimum delay depends on the sps: delay >= 1/sps
@@ -147,16 +143,24 @@ async function readSingle(channel, pga = 6144, sps = 250) {
     await Delay.wait(delay);
 
     // Read the conversion results
-    const rawBytes = new Uint8Array(2);
-    await readI2cBlock(this.address, ADS1015_REG_POINTER_CONVERT, 2, rawBytes);
+    const word = await this.readWord(this.address, ADS1015_REG_POINTER_CONVERT);
+    const value = decodeWord(word);
 
-    const rawValue = (rawBytes[0] << 8) | (rawBytes[1]);
+    return (value * (pga / 1000)) / 32768.0;
+}
 
-    const signedValue = rawValue > 0x7FFF
-        ? rawValue - 0xFFFF
-        : rawValue;
+function encodeWord(value) {
+    const msb = (value >> 8) & 0xFF;
+    const lsb = value & 0xFF;
 
-    return (signedValue * (pga / 1000)) / 32768.0;
+    return msb | (lsb << 8);
+}
+
+function decodeWord(word) {
+    const msb = word & 0xFF;
+    const lsb = (word >> 8) & 0xFF;
+
+    return (msb << 8) | lsb;
 }
 
 function _getConfig(channel, pga, sps) {
