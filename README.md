@@ -17,3 +17,17 @@ Configure redis for persistence.
 Edit /etc/redis/redis.conf with sudo
     Set `appendonly yes`
     Set `save 60 1` for writing to disk
+
+Starting the system
+Build the latest source with `npm run build`
+Then, if debugging, run the system manually with `sudo node build/aquarium.js`
+
+Configuring the system for auto-start
+Ensure that PM2 is installed
+Configure PM2 auto-start with `sudo pm2 startup`
+Add the aquarium to PM2's process list via `sudo pm2 start build/aquarium.js`
+
+Restarting the system
+If the system is running via PM2, you can check the state with `sudo pm2 list` or `sudo pm2 monit`
+To restart (particularly, after making source changes), use `sudo pm2 restart aquarium`
+
