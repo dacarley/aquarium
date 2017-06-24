@@ -56,13 +56,15 @@ async function update() {
     }
 
     const isPumpOn = this._isPumpOn();
+    const min = Config.autoTopOff.targetSumpLevel;
+    const max = min + 0.25;
 
-    if (isPumpOn && waterLevels.sump > Config.autoTopOff.sump.max) {
+    if (isPumpOn && waterLevels.sump > max) {
         this._turnPumpOff();
         Logger.info("Sump is above its max, turned pump off.");
     }
 
-    if (!isPumpOn && waterLevels.sump < Config.autoTopOff.sump.min) {
+    if (!isPumpOn && waterLevels.sump < min) {
         this._turnPumpOn(() => {
             Logger.info("Sump is below its min, turned pump on.");
         });

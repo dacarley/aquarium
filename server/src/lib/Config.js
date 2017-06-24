@@ -25,10 +25,7 @@ export default {
     autoTopOff: {
         pumpPin: 26,
         pumpCycleSeconds: 60 * 5,
-        sump: {
-            min: 9.5,
-            max: 9.75
-        },
+        targetSumpLevel: 10,
         reservoir: {
             min: 2,
             alert: 3

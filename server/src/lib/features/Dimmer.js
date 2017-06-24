@@ -88,6 +88,7 @@ async function _setColorBrightnesses(colorBrightnesses) {
     });
 
     Logger.info("Setting channels", {
+        time: moment(),
         channelSettings: _.map(channelSettings, settings => {
             return `${settings.name} (${settings.channel}): ${settings.percentage}% (${settings.brightness})`;
         })
