@@ -11,17 +11,18 @@ const timeOfDayPattern = /(\d+):(\d+)\s*(am|pm)/;
 export default {
     getColorBrightnesses,
 
+    _getColor,
     _findNext,
     _findPrevious,
     _getTimeOfDay
 };
 
 async function getColorBrightnesses() {
+    const defaultColors = await UserSettings.get("defaultColors");
     const rawDimmingSchedule = await UserSettings.get("dimmingSchedule");
     const dimmingSchedule = _(rawDimmingSchedule)
-        .map((entry, name) => ({
+        .map(entry => ({
             ...entry,
-            name,
             timeOfDay: this._getTimeOfDay(entry.timeOfDay)
         }))
         .sortBy("timeOfDay")
@@ -34,24 +35,24 @@ async function getColorBrightnesses() {
     const timeSpan = moment(next.timeOfDay).diff(previous.timeOfDay);
     const index = now.diff(previous.timeOfDay);
     const factor = index / timeSpan;
-    const percentage = _.round(factor * 100, 2);
 
-    Logger.info(`Interpolating between ${previous.name} and ${next.name}.  Currently ${percentage}% through.`);
-
-    const colorNames = _(previous.colors)
-        .keys()
-        .concat(_.keys(next.colors))
-        .uniq()
-        .value();
+    const colorNames = _.keys(defaultColors);
 
     return MapBuilder.build(colorNames, _.identity, colorName => {
-        const previousLevel = _.get(previous.colors, colorName, 0);
-        const nextLevel = _.get(next.colors, colorName, 0);
+        const previousLevel = this._getColor(previous, colorName);
+        const nextLevel = this._getColor(next, colorName);
         const difference = nextLevel - previousLevel;
         const newLevel = previousLevel + (difference * factor);
 
         return newLevel;
     });
+}
+
+function _getColor(scheduleEntry, colorName) {
+    const level = _.get(scheduleEntry.colors, colorName, 0);
+    const factor = _.get(scheduleEntry, "factor", 1);
+
+    return (level * factor) / 100;
 }
 
 function _findNext(now, dimmingSchedule) {

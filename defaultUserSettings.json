@@ -1,40 +1,59 @@
 {
-    "dimmingSchedule": {
-        "Sunrise": {
-            "timeOfDay": "6:00am",
+    "defaultColors": {
+        "RoyalBlue": 0,
+        "UV": 0,
+        "ColdWhite": 0,
+        "WarmWhite": 0,
+        "Red": 0,
+        "Green": 0,
+        "Blue": 0
+    },
+    "dimmingSchedule": [
+        {
+            "timeOfDay": "2:45pm",
             "colors": {
-                "RoyalBlue": 0.5,
-                "UV": 0.5,
-                "ColdWhite": 0.5,
-                "WarmWhite": 0.5,
-                "Red": 0,
-                "Green": 0,
-                "Blue": 0
+                "UV": 1
             }
         },
-        "Noon": {
-            "timeOfDay": "12:00pm",
+        {
+            "timeOfDay": "3:00pm",
             "colors": {
-                "RoyalBlue": 0.5,
-                "UV": 0.5,
-                "ColdWhite": 0.5,
-                "WarmWhite": 0.5,
-                "Red": 0,
-                "Green": 0,
-                "Blue": 0
+                "RoyalBlue": 5,
+                "ColdWhite": 5,
+                "WarmWhite": 5
             }
         },
-        "Sunset": {
-            "timeOfDay": "6:00pm",
+        {
+            "timeOfDay": "7:30pm",
+            "factor": 0.6,
             "colors": {
-                "RoyalBlue": 0.5,
-                "UV": 0.5,
-                "ColdWhite": 0.5,
-                "WarmWhite": 0.5,
-                "Red": 0,
-                "Green": 0,
-                "Blue": 0
+                "RoyalBlue": 100,
+                "ColdWhite": 50,
+                "WarmWhite": 50
+            }
+        },
+        {
+            "timeOfDay": "10:00pm",
+            "factor": 0.75,
+            "colors": {
+                "RoyalBlue": 100,
+                "ColdWhite": 50,
+                "WarmWhite": 50
+            }
+        },
+        {
+            "timeOfDay": "1:00am",
+            "colors": {
+                "RoyalBlue": 5,
+                "ColdWhite": 5,
+                "WarmWhite": 5
+            }
+        },
+        {
+            "timeOfDay": "1:15am",
+            "colors": {
+                "UV": 1
             }
         }
-    }
+    ]
 }
