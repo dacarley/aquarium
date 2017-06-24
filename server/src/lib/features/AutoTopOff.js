@@ -83,7 +83,7 @@ function _canTurnPumpOn() {
     const timestamp = _.get(this, "_pumpOffTimestamp", "1975-11-23T00:00:00.000Z");
     const offSeconds = moment().diff(timestamp, "seconds");
 
-    return offSeconds >= Config.autoTopOff.pumpCooldownTimeSeconds;
+    return offSeconds >= Config.autoTopOff.pumpCycleSeconds;
 }
 
 function _turnPumpOn(callback) {
@@ -114,7 +114,7 @@ function _enforceMaxPumpRuntime() {
     }
 
     const pumpRunTimeSeconds = moment().diff(this._pumpOnTimestamp, "seconds");
-    if (pumpRunTimeSeconds >= Config.autoTopOff.maxPumpRunTimeSeconds) {
+    if (pumpRunTimeSeconds >= Config.autoTopOff.pumpCycleSeconds) {
         Logger.info("Pump has been on long enough, turning off");
         this._turnPumpOff();
     }

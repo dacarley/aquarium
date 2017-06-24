@@ -24,8 +24,7 @@ export default {
     },
     autoTopOff: {
         pumpPin: 26,
-        maxPumpRunTimeSeconds: 60 * 15,
-        pumpCooldownTimeSeconds: 60 * 15,
+        pumpCycleSeconds: 60 * 5,
         sump: {
             min: 9.5,
             max: 9.75
