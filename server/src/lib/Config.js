@@ -27,8 +27,8 @@ export default {
         maxPumpRunTimeSeconds: 60 * 15,
         pumpCooldownTimeSeconds: 60 * 15,
         sump: {
-            min: 10,
-            max: 10.25
+            min: 9.5,
+            max: 9.75
         },
         reservoir: {
             min: 2,

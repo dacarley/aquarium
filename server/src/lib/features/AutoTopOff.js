@@ -17,10 +17,7 @@ export default {
     _canTurnPumpOn,
     _turnPumpOn,
     _turnPumpOff,
-    _enforceMaxPumpRuntime,
-
-    _pumpOnTimestamp: undefined,
-    _pumpOffTimestamp: moment("1975-11-23T00:00:00.000Z")
+    _enforceMaxPumpRuntime
 };
 
 async function init() {
@@ -31,6 +28,7 @@ async function init() {
     });
 
     this._turnPumpOff();
+    this._pumpOffTimestamp = undefined;
 
     Shutdown.register(() => this._shutdown());
 }
@@ -82,9 +80,10 @@ function _canTurnPumpOn() {
         return false;
     }
 
-    const offSeconds = moment().diff(this._pumpOffTimestamp, "seconds");
+    const timestamp = _.get(this, "_pumpOffTimestamp", "1975-11-23T00:00:00.000Z");
+    const offSeconds = moment().diff(timestamp, "seconds");
 
-    return (offSeconds >= Config.autoTopOff.pumpCooldownTimeSeconds);
+    return offSeconds >= Config.autoTopOff.pumpCooldownTimeSeconds;
 }
 
 function _turnPumpOn(callback) {
