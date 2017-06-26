@@ -4,7 +4,6 @@ import _ from "lodash";
 import i2cBus from "i2c-bus";
 import Logger from "AQ-Logger";
 import Delay from "AQ-Delay";
-import Promisify from "AQ-Promisify";
 
 /* eslint-disable no-bitwise */
 
@@ -117,8 +116,6 @@ export default {
 function connect() {
     this.address = 0x48;
     this.i2c = i2cBus.openSync(1);
-    this.writeWord = Promisify(this.i2c.writeWord, this.i2c);
-    this.readWord = Promisify(this.i2c.readWord, this.i2c);
 }
 
 // Gets a single-ended ADC reading from the specified channel in mV. \
@@ -127,26 +124,34 @@ function connect() {
 // see datasheet page 14 for more info. \
 // The pga must be given in mV, see page 13 for the supported values.
 
-async function readSingle(channel, pga = 6144, sps = 250) {
-    let config = this._getConfig(channel, pga, sps);
+async function readSingle(channel, pga = 6144, sps = 250, channelName) {
+    try {
+        let config = this._getConfig(channel, pga, sps);
 
-    // Set 'start single-conversion' bit
-    config |= ADS1015_REG_CONFIG_OS_SINGLE;
+        // Set 'start single-conversion' bit
+        config |= ADS1015_REG_CONFIG_OS_SINGLE;
 
-    // Write config register to the ADC
-    await this.writeWord(this.address, ADS1015_REG_POINTER_CONFIG, encodeWord(config));
+        // Write config register to the ADC
+        this.i2c.writeWordSync(this.address, ADS1015_REG_POINTER_CONFIG, encodeWord(config));
 
-    // Wait for the ADC conversion to complete
-    // The minimum delay depends on the sps: delay >= 1/sps
-    // We add 0.1ms to be sure
-    const delay = (1000 / sps) + 10;
-    await Delay.wait(delay);
+        // Wait for the ADC conversion to complete
+        // The minimum delay depends on the sps: delay >= 1/sps
+        // We add 0.1ms to be sure
+        const delay = (1000 / sps) + 10;
+        await Delay.wait(delay);
 
-    // Read the conversion results
-    const word = await this.readWord(this.address, ADS1015_REG_POINTER_CONVERT);
-    const value = decodeWord(word);
+        // Read the conversion results
+        const word = this.i2c.readWordSync(this.address, ADS1015_REG_POINTER_CONVERT);
+        const value = decodeWord(word);
 
-    return (value * (pga / 1000)) / 32768.0;
+        return (value * (pga / 1000)) / 32768.0;
+    } catch (err) {
+        Logger.error(`Caught an error reading ${channelName}`, {
+            err
+        });
+
+        throw err;
+    }
 }
 
 function encodeWord(value) {

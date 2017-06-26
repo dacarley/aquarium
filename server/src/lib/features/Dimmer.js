@@ -22,37 +22,43 @@ export default {
 };
 
 async function init() {
-    const options = {
-        i2c: i2cBus.openSync(1),
-        address: 0x40,
-        frequency: 1000,
-        debug: false
-    };
-
     Logger.info("Connecting to dimmer");
 
-    return new Promise((resolve, reject) => {
-        this.pwm = new Pca9685Driver(options, (err) => {
-            if (err) {
-                return reject(new Error("Could not connect to 9685 on i2c"));
-            }
+    const Lights = Promisify(Pca9685Driver);
+    try {
+        const options = {
+            i2c: i2cBus.openSync(1),
+            address: 0x40,
+            frequency: 1000,
+            debug: false
+        };
 
-            Shutdown.register(() => this._disconnect());
+        this.pwm = await new Lights(options);
 
-            Logger.info("Connected to dimmer");
+        Shutdown.register(() => this._disconnect());
 
-            resolve();
-        });
-    });
+        Logger.info("Connected to dimmer");
+    } catch (err) {
+        this.pwm = undefined;
+        Logger.alert("Could not connect to the lights");
+    }
 }
 
 async function _disconnect() {
+    if (!this.pwm) {
+        return;
+    }
+
     const allChannelsOff = Promisify(this.pwm.allChannelsOff, this.pwm);
     await allChannelsOff();
     this.pwm = undefined;
 }
 
 async function update() {
+    if (!this.pwm) {
+        return;
+    }
+
     const now = moment();
     if (now.diff(this._lastUpdateTimestamp, "seconds") < 15) {
         return;
@@ -65,7 +71,7 @@ async function update() {
 
 async function _setColorBrightnesses(colorBrightnesses) {
     if (!this.pwm) {
-        Logger.throw("The dimmer is not yet connected");
+        return;
     }
 
     const setDutyCycle = Promisify(this.pwm.setDutyCycle, this.pwm);
