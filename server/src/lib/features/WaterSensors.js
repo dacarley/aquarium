@@ -34,16 +34,16 @@ async function readWaterLevels() {
         const vIn = await ADS1x15.readSingle(Config.waterSensors.a2d.vIn, 6144, 64, "vIn");
         await this._readWaterSensor("sump", vIn);
         await this._readWaterSensor("reservoir", vIn);
-
-        return {
-            sump: this._waterLevels.sump.runningAverage,
-            reservoir: this._waterLevels.reservoir.runningAverage
-        };
     } catch (err) {
         Logger.alert("Caught an error updating water levels", {
             err
         });
     }
+
+    return {
+        sump: this._waterLevels.sump.runningAverage,
+        reservoir: this._waterLevels.reservoir.runningAverage
+    };
 }
 
 async function _readWaterSensor(sensor, vIn) {
