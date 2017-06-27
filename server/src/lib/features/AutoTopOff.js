@@ -22,6 +22,7 @@ export default {
 
 async function init() {
     WaterSensors.init();
+
     this.pump = new pigpio.Gpio(Config.autoTopOff.pumpPin, {
         pullUpDown: pigpio.Gpio.PUD_DOWN,
         mode: pigpio.Gpio.OUTPUT
@@ -43,11 +44,11 @@ async function update() {
     const waterLevels = await WaterSensors.readWaterLevels();
     Logger.info("waterLevels", waterLevels);
 
-    // if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
-    //     this._turnPumpOff();
-    //
-    //     return;
-    // }
+    if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
+        this._turnPumpOff();
+    
+        return;
+    }
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.alert) {
         Logger.alertHourly("The reservoir is getting low", {
