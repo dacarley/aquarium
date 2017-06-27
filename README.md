@@ -1,10 +1,19 @@
 # Aquarium automation
 This system has only been used/tested on a Raspberry Pi 3.
+Some exploratory testing has been done on a Raspberry Pi Zero W.
 
 ## Configuring the system
 
+#### Install some basic utilities
+    sudo apt-get update
+    sudo apt-get install vim git
+
 #### Install the latest version of node.
 https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+
+**For Raspberry Pi Zero W**
+
+    https://raspberrypi.stackexchange.com/questions/48303/install-nodejs-for-all-raspberry-pi
 
 #### Install system dependencies
     sudo npm install -g n pm2 webpack yarn
