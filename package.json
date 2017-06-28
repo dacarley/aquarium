@@ -1,6 +1,7 @@
 {
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd client; yarn; cd ..",
     "start": "npm run build && sudo pm2 restart aquarium",
     "build": "webpack --progress",
     "lint": "eslint --max-warnings 0 server/src"

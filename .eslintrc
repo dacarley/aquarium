@@ -41,6 +41,7 @@
         }]
     },
     "globals": {
+        "document": false,
         "after": false,
         "afterAll": false,
         "afterEach": false,
