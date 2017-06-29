@@ -50,7 +50,8 @@ module.exports = {
                         }]
                     ],
                     plugins: [
-                        "transform-object-rest-spread"
+                        "transform-object-rest-spread",
+                        "transform-function-bind"
                     ],
                     cacheDirectory: true
                 }

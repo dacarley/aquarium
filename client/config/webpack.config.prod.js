@@ -1,5 +1,6 @@
 "use strict";
 
+const _ = require("lodash");
 const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
@@ -12,6 +13,8 @@ const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
+const root = require("root-path");
+const providesModuleHelper = require("../../providesModuleHelper");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -84,12 +87,16 @@ module.exports = {
         // some tools, although we do not recommend using it, see:
         // https://github.com/facebookincubator/create-react-app/issues/290
         extensions: [".js", ".json", ".jsx"],
-        alias: {
+        alias: _.merge({
 
             // Support React Native Web
             // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
             "react-native": "react-native-web"
-        },
+        }, providesModuleHelper.discover({
+            roots: [
+                root("client/src")
+            ]
+        })),
         plugins: [
             // Prevents users from importing files from outside of src/ (or node_modules/).
             // This often causes confusion because we only process files within src/ with babel.

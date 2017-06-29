@@ -13,7 +13,7 @@ const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const getClientEnvironment = require("./env");
 const paths = require("./paths");
 const root = require("root-path");
-const providesModuleHelper = require("./providesModuleHelper");
+const providesModuleHelper = require("../../providesModuleHelper");
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.

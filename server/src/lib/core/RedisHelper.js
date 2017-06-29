@@ -1,6 +1,4 @@
-/*
-* @providesModule BP-RedisHelper
-*/
+// @providesModule AQ-RedisHelper
 
 import _ from "lodash";
 import Redis from "ioredis";
@@ -12,7 +10,22 @@ export default {
 };
 
 async function connect() {
-    const redis = new Redis();
+    if (!this.redis) {
+        const params = {
+            parser: "javascript",
+            showFriendlyErrorStack: true
+        };
+
+        this.redis = new Redis(params);
+
+        this.redis.on("error", (error) => {
+            Logger.alert("RedisError", {
+                error
+            });
+        });
+    }
+
+    const redis = this.redis;
 
     const service = {
         keys,
@@ -67,7 +80,8 @@ async function connect() {
     }
 
     async function set(key, obj, prepareItem = service.stringify) {
-        return redis.set(key, await prepareItem(obj));
+        const value = await prepareItem(obj);
+        await redis.set(key, value);
     }
 
     async function get(key, parse = service.unstringify) {

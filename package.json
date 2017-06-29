@@ -2,14 +2,15 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "cd client; yarn; cd ..",
-    "start": "npm run build && sudo pm2 restart aquarium",
-    "build": "webpack --progress",
+    "start": "sudo node build/aquarium",
+    "build": "webpack --progress; cd client; yarn build; cd ..",
     "lint": "eslint --max-warnings 0 server/src"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
+    "babel-plugin-transform-function-bind": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.5.2",
     "esformatter-braces": "^1.2.1",
@@ -34,6 +35,8 @@
     "webpack": "^2.6.1"
   },
   "dependencies": {
+    "cors": "^2.8.3",
+    "express": "^4.15.3",
     "i2c-bus": "^1.2.2",
     "ioredis": "^3.1.1",
     "lodash": "^4.17.4",

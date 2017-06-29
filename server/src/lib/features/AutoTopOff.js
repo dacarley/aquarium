@@ -6,6 +6,7 @@ import Config from "AQ-Config";
 import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
 import WaterSensors from "AQ-WaterSensors";
+import RedisHelper from "AQ-RedisHelper";
 import pigpio from "pigpio";
 
 export default {
@@ -42,11 +43,13 @@ function _shutdown() {
 
 async function update() {
     const waterLevels = await WaterSensors.readWaterLevels();
-    Logger.info("waterLevels", waterLevels);
+
+    const redis = await RedisHelper.connect();
+    await redis.set("waterLevels", waterLevels);
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
         this._turnPumpOff();
-    
+
         return;
     }
 
