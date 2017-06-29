@@ -3,7 +3,9 @@
   "scripts": {
     "postinstall": "cd client; yarn; cd ..",
     "start": "sudo node build/aquarium",
-    "build": "webpack --progress; cd client; yarn build; cd ..",
+    "buildServer": "webpack --progress",
+    "buildClient": "cd client; yarn build; cd ..",
+    "build": "yarn buildServer && yarn buildClient",
     "lint": "eslint --max-warnings 0 server/src"
   },
   "devDependencies": {

@@ -4,7 +4,8 @@ import _ from "lodash";
 import Logger from "AQ-Logger";
 
 const apis = [
-    require("AQ-ApiGetWaterLevels")
+    require("AQ-ApiGetWaterLevels"),
+    require("AQ-ApiGetDimmerLevels")
 ];
 
 export default {

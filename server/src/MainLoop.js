@@ -6,6 +6,7 @@ import Shutdown from "AQ-Shutdown";
 import LogStreamingLoggly from "AQ-LogStreamingLoggly";
 import AutoTopOff from "AQ-AutoTopOff";
 import Router from "AQ-Router";
+import RedisHelper from "AQ-RedisHelper";
 
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-await-in-loop */
@@ -18,6 +19,7 @@ export default {
 
 async function run() {
     await LogStreamingLoggly.init();
+    await RedisHelper.init();
     await Dimmer.init();
     await AutoTopOff.init();
     await Router.init();

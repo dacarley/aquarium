@@ -10,6 +10,7 @@ import PromiseHelper from "AQ-PromiseHelper";
 import Shutdown from "AQ-Shutdown";
 import Logger from "AQ-Logger";
 import DimmerScheduler from "AQ-DimmerScheduler";
+import RedisHelper from "AQ-RedisHelper";
 
 export default {
     init,
@@ -17,6 +18,7 @@ export default {
 
     _disconnect,
     _setColorBrightnesses,
+    _saveDimmerLevels,
 
     _lastUpdateTimestamp: moment("1975-11-23T00:00:00.000Z")
 };
@@ -26,6 +28,8 @@ async function init() {
 
     const Lights = Promisify(Pca9685Driver);
     try {
+        await this._saveDimmerLevels();
+
         const options = {
             i2c: i2cBus.openSync(1),
             address: 0x40,
@@ -93,14 +97,23 @@ async function _setColorBrightnesses(colorBrightnesses) {
             .value();
     });
 
-    Logger.info("Setting channels", {
-        time: moment(),
-        channelSettings: _.map(channelSettings, settings => {
-            return `${settings.name} (${settings.channel}): ${settings.percentage}% (${settings.brightness})`;
-        })
-    });
+    await this._saveDimmerLevels(channelSettings);
 
     await PromiseHelper.each(channelSettings, async (settings) => {
         await setDutyCycle(settings.channel, settings.brightness, 0);
     });
+}
+
+async function _saveDimmerLevels(channelSettings) {
+    const dimmerLevels = _(channelSettings)
+        .map(settings => {
+            return [
+                settings.name,
+                _.pick(settings, ["channel", "percentage", "brightness"])
+            ];
+        })
+        .fromPairs()
+        .value();
+
+    await RedisHelper.set("dimmerLevels", dimmerLevels);
 }

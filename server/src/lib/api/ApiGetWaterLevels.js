@@ -9,8 +9,7 @@ export default {
 };
 
 async function execute() {
-    const redis = await RedisHelper.connect();
-    const waterLevels = await redis.get("waterLevels");
+    const waterLevels = await RedisHelper.get("waterLevels");
 
     return waterLevels;
 }

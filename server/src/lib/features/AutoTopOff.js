@@ -44,8 +44,7 @@ function _shutdown() {
 async function update() {
     const waterLevels = await WaterSensors.readWaterLevels();
 
-    const redis = await RedisHelper.connect();
-    await redis.set("waterLevels", waterLevels);
+    await RedisHelper.set("waterLevels", waterLevels);
 
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {
         this._turnPumpOff();
