@@ -8,15 +8,18 @@
         "Green": 0,
         "Blue": 0
     },
+    "autoTopOff": {
+        "targetSumpLevel": 10
+    },
     "dimmingSchedule": [
         {
-            "timeOfDay": "2:45pm",
+            "timeOfDay": "12:45pm",
             "colors": {
-                "UV": 1
+                "UV": 6
             }
         },
         {
-            "timeOfDay": "3:00pm",
+            "timeOfDay": "1:00pm",
             "colors": {
                 "RoyalBlue": 5,
                 "ColdWhite": 5,
@@ -24,7 +27,7 @@
             }
         },
         {
-            "timeOfDay": "7:30pm",
+            "timeOfDay": "5:30pm",
             "factor": 0.6,
             "colors": {
                 "RoyalBlue": 100,
@@ -33,7 +36,7 @@
             }
         },
         {
-            "timeOfDay": "10:00pm",
+            "timeOfDay": "8:00pm",
             "factor": 0.75,
             "colors": {
                 "RoyalBlue": 100,
@@ -42,7 +45,7 @@
             }
         },
         {
-            "timeOfDay": "1:00am",
+            "timeOfDay": "11:00pm",
             "colors": {
                 "RoyalBlue": 5,
                 "ColdWhite": 5,
@@ -50,9 +53,9 @@
             }
         },
         {
-            "timeOfDay": "1:15am",
+            "timeOfDay": "11:15pm",
             "colors": {
-                "UV": 1
+                "UV": 6
             }
         }
     ]

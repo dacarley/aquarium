@@ -16,6 +16,7 @@ export default {
     init,
     update,
 
+    _connectToLights,
     _disconnect,
     _setColorBrightnesses,
     _saveDimmerLevels,
@@ -26,26 +27,39 @@ export default {
 async function init() {
     Logger.info("Connecting to dimmer");
 
-    const Lights = Promisify(Pca9685Driver);
     try {
         await this._saveDimmerLevels();
 
-        const options = {
-            i2c: i2cBus.openSync(1),
-            address: 0x40,
-            frequency: 1000,
-            debug: false
-        };
-
-        this.pwm = await new Lights(options);
+        this.pwm = await this._connectToLights();
 
         Shutdown.register(() => this._disconnect());
 
         Logger.info("Connected to dimmer");
     } catch (err) {
         this.pwm = undefined;
-        Logger.alert("Could not connect to the lights");
+        Logger.alert("Could not connect to the lights", {
+            err
+        });
     }
+}
+
+function _connectToLights() {
+    const options = {
+        i2c: i2cBus.openSync(1),
+        address: 0x40,
+        frequency: 1000,
+        debug: false
+    };
+
+    return new Promise(resolve => {
+        const pwm = new Pca9685Driver(options, err => {
+            if (err) {
+                throw err;
+            }
+        });
+
+        resolve(pwm);
+    });
 }
 
 async function _disconnect() {
@@ -100,7 +114,14 @@ async function _setColorBrightnesses(colorBrightnesses) {
     await this._saveDimmerLevels(channelSettings);
 
     await PromiseHelper.each(channelSettings, async (settings) => {
-        await setDutyCycle(settings.channel, settings.brightness, 0);
+        try {
+            await setDutyCycle(settings.channel, settings.brightness, 0);
+        } catch (err) {
+            Logger.alert("Caught an error setting dimmer channel level", {
+                err,
+                settings
+            });
+        }
     });
 }
 
