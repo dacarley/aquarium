@@ -56,9 +56,13 @@ function _getColor(scheduleEntry, colorName) {
 }
 
 function _findNext(now, dimmingSchedule) {
-    const next = _.find(dimmingSchedule, entry => !now.isAfter(entry.timeOfDay));
+    const next = _.find(dimmingSchedule, entry => entry.override || !now.isAfter(entry.timeOfDay));
 
     if (next) {
+        if (next.override) {
+            next.timeOfDay = now.add(1, "hour");
+        }
+
         return next;
     }
 
@@ -71,9 +75,13 @@ function _findNext(now, dimmingSchedule) {
 }
 
 function _findPrevious(now, dimmingSchedule) {
-    const previous = _.findLast(dimmingSchedule, entry => !now.isBefore(entry.timeOfDay));
+    const previous = _.findLast(dimmingSchedule, entry => entry.override || !now.isBefore(entry.timeOfDay));
 
     if (previous) {
+        if (previous.override) {
+            previous.timeOfDay = now.subtract(1, "hour");
+        }
+
         return previous;
     }
 
