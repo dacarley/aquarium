@@ -3,6 +3,7 @@
 import _ from "lodash";
 import HttpRequest from "AQ-HttpRequest";
 import Shutdown from "AQ-Shutdown";
+import Delay from "AQ-Delay";
 
 export default {
     init,
@@ -14,9 +15,12 @@ export default {
 function init() {
     Shutdown.register(async () => {
         // eslint-disable-next-line no-console
-        console.log("Waiting for pending logs to send");
+        console.log(`Waiting for ${this._pendingPosts.length} pending logs to send`);
 
-        await Promise.all(this._pendingPosts);
+        const allPending = Promise.all(this._pendingPosts);
+        const timeout = Delay.wait(5000);
+
+        await Promise.race(allPending, timeout);
     });
 }
 

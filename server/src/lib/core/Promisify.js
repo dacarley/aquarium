@@ -15,7 +15,11 @@ export default (func, context) => {
                 resolve(...args);
             });
 
-            func.apply(context, callArgs);
+            try {
+                func.apply(context, callArgs);
+            } catch (err) {
+                reject(err);
+            }
         });
     };
 };

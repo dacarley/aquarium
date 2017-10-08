@@ -53,7 +53,11 @@ function register(callback) {
 
 async function _handleShutdown() {
     await PromiseHelper.each(this._callbacks, async callback => {
-        await callback();
+        try {
+            await callback();
+        } catch (err) {
+            console.log("Caught an error during shutdown", err);
+        }
     });
 
     console.log("Finished shudown.");

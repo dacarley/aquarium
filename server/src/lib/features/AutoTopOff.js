@@ -105,15 +105,28 @@ function _turnPumpOn(callback) {
 
     this._pumpOnTimestamp = moment().toISOString();
     this._pumpOffTimestamp = undefined;
-    this.pump.digitalWrite(1);
+
+    try {
+        this.pump.digitalWrite(1);
+    } catch (err) {
+        Logger.throw("Caught an error while turning the pump on", {
+            err
+        });
+    }
 
     callback();
 }
 
 function _turnPumpOff() {
-    this._pumpOnTimestamp = undefined;
-    this._pumpOffTimestamp = moment().toISOString();
-    this.pump.digitalWrite(0);
+    try {
+        this._pumpOnTimestamp = undefined;
+        this._pumpOffTimestamp = moment().toISOString();
+        this.pump.digitalWrite(0);
+    } catch (err) {
+        Logger.throw("Caught an error while turning the pump off", {
+            err
+        });
+    }
 }
 
 function _enforceMaxPumpRuntime() {

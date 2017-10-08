@@ -1,6 +1,7 @@
 // @providesModule AQ-DimmerLevels
 
 import React, { Component } from "react";
+import _ from "lodash";
 
 export default class WaterLevels extends Component {
     state = {};
@@ -14,13 +15,28 @@ export default class WaterLevels extends Component {
         });
     }
 
-    render() {
-        const dimmerLevels = JSON.stringify(this.state.dimmerLevels);
-
+    _renderChannel = (channelName, levels) => {
         return (
-            <p>
-                { dimmerLevels }
-            </p>
+            <div key={ channelName }>
+                <h1>{ channelName }</h1>
+                <p>
+                    { levels.channel }
+                </p>
+                <p>
+                    { levels.percentage }
+                </p>
+                <p>
+                    { levels.brightness }
+                </p>
+            </div>
+            );
+    }
+
+    render() {
+        return (
+            <div>
+                { _.map(this.state.dimmerLevels, (levels, channelName) => this._renderChannel(channelName, levels)) }
+            </div>
             );
     }
 }
