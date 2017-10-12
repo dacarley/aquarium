@@ -8,8 +8,6 @@ export default {
     execute
 };
 
-async function execute() {
-    const waterLevels = await RedisHelper.get("waterLevels");
-
-    return waterLevels;
+function execute() {
+    return RedisHelper.get("waterLevels");
 }

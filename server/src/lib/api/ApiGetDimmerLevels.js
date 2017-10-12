@@ -9,12 +9,6 @@ export default {
     execute
 };
 
-async function execute() {
-    const dimmerLevels = await RedisHelper.get("dimmerLevels");
-
-    Logger.info("dimmerLevels", {
-        dimmerLevels
-    });
-
-    return dimmerLevels;
+function execute() {
+    return RedisHelper.get("dimmerLevels");
 }

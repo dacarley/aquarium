@@ -45,7 +45,10 @@ function _shutdown() {
 async function update() {
     const waterLevels = await WaterSensors.readWaterLevels();
 
-    await RedisHelper.set("waterLevels", waterLevels);
+    await RedisHelper.set("waterLevels", {
+        timestamp: moment().toISOString(),
+        waterLevels
+    });
 
     /*
     if (waterLevels.reservoir < Config.autoTopOff.reservoir.min) {

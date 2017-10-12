@@ -136,5 +136,8 @@ async function _saveDimmerLevels(channelSettings) {
         .fromPairs()
         .value();
 
-    await RedisHelper.set("dimmerLevels", dimmerLevels);
+    await RedisHelper.set("dimmerLevels", {
+        timestamp: moment().toISOString(),
+        dimmerLevels
+    });
 }
