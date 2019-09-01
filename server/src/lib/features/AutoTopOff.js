@@ -110,7 +110,7 @@ function _turnPumpOn(callback) {
     this._pumpOffTimestamp = undefined;
 
     try {
-        this.pump.digitalWrite(1);
+        //this.pump.digitalWrite(1);
     } catch (err) {
         Logger.throw("Caught an error while turning the pump on", {
             err
