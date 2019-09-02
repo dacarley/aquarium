@@ -39,12 +39,12 @@
   "dependencies": {
     "cors": "^2.8.3",
     "express": "^4.15.3",
-    "i2c-bus": "^1.2.2",
-    "ioredis": "^3.1.1",
+    "i2c-bus": "^4.0.10",
+    "ioredis": "^4.14.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "pca9685": "^4.0.3",
-    "pigpio": "^0.6.0",
+    "pigpio": "^1.2.3",
     "request": "^2.81.0"
   }
 }
