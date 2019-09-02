@@ -1,5 +1,3 @@
-// @providesModule AQ-WaterLevels
-
 import React, { Component } from "react";
 
 export default class WaterLevels extends Component {
