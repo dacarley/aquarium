@@ -26,26 +26,26 @@ export default class Shutdown {
     }
 
     private static _onBeforeExit(code: number): void {
-        this._logAndExit("Normal shutdown", {
+        Shutdown._logAndExit("Normal shutdown", {
             code
         });
     }
 
     private static _onUnhandledRejection(reason: {} | null | undefined, promise: Promise<any>): void {
-        this._logAndExit("Unhandled rejection", {
+        Shutdown._logAndExit("Unhandled rejection", {
             reason,
             promise
         });
     }
 
     private static _onUncaughtException(error: Error): void {
-        this._logAndExit("Uncaught exception", {
+        Shutdown._logAndExit("Uncaught exception", {
             error
         });
     }
 
     private static _onSignal(signal: NodeJS.Signals): void {
-        this._logAndExit("this by signal", {
+        Shutdown._logAndExit("Shutdown by signal", {
             signal
         });
     }
@@ -53,7 +53,7 @@ export default class Shutdown {
     private static _logAndExit(msg: string, data: ShutdownData): void {
         const code = data.code || -1;
 
-        Logger.info(msg, {
+        Logger.info(`\n\n${msg}`, {
             ...data,
             code
         });

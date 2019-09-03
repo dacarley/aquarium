@@ -29,8 +29,6 @@ export default class DimmerScheduler {
 
         const dimmingSchedule = _.sortBy(unsortedDimmingSchedule, "timeOfDay");
 
-        console.log(dimmingSchedule);
-
         const now = moment();
         const next = this._findNext(now, dimmingSchedule);
         const previous = this._findPrevious(now, dimmingSchedule);
