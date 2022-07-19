@@ -1,6 +1,5 @@
 # Aquarium automation
 This system has only been used/tested on a Raspberry Pi 3.
-Some exploratory testing has been done on a Raspberry Pi Zero W.
 
 ## Configuring the system
 
@@ -9,29 +8,14 @@ Some exploratory testing has been done on a Raspberry Pi Zero W.
     sudo apt-get install vim git
 
 #### Install the latest version of node.
+The system is known to work with Node 18
 https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 
-**For Raspberry Pi Zero W**
-
-    https://raspberrypi.stackexchange.com/questions/48303/install-nodejs-for-all-raspberry-pi
-
 #### Install system dependencies
-    sudo npm install -g n pm2 webpack yarn
-    sudo n latest
+    sudo npm install -g pm2
 
 #### Ensure that i2c access is enabled.
 Use raspi-config to configure.
-
-#### Install pigpio
-https://www.npmjs.com/package/pigpio
-
-#### Install redis
-    apt-get install redis-server
-
-#### Configure redis for persistence
-Edit /etc/redis/redis.conf with sudo
-    Set `appendonly yes`
-    Set `save 60 1` for writing to disk
 
 ## Starting the system
 Build the latest source

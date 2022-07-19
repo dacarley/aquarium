@@ -1,43 +1,21 @@
 {
   "name": "aquarium",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "web": "yarn workspace web serve",
-    "web:ui": "yarn workspace web vue ui",
-    "web:build": "yarn workspace web build",
-    "server": "yarn workspace server start",
-    "lint": "scripts/lint.sh",
-    "test": "scripts/test.sh"
+    "build": "rollup --config"
   },
-  "devDependencies": {
-    "@types/chai": "4.2.0",
-    "@types/i2c-bus": "1.0.24",
-    "@types/lodash": "4.14.138",
-    "@types/mocha": "5.2.7",
-    "@types/node-fetch": "2.5.0",
-    "@types/pigpio": "1.2.1",
-    "@types/sinon": "7.0.13",
-    "@typescript-eslint/eslint-plugin": "2.0.0",
-    "@vue/eslint-config-typescript": "4.0.0",
-    "chai": "4.2.0",
-    "chai-string": "1.5.0",
-    "chai-subset": "1.6.0",
-    "eslint": "6.2.2",
-    "eslint-plugin-switch-case": "1.1.2",
-    "eslint-plugin-vue": "5.2.3",
-    "mocha": "6.2.0",
-    "sinon": "7.4.1",
-    "sinon-chai": "3.3.0",
-    "ts-mocha": "6.0.0",
-    "ts-node": "8.3.0",
-    "ts-node-dev": "1.0.0-pre.42",
-    "tsc-watch": "2.4.0",
-    "typescript": "3.5.3"
-  },
-  "dependencies": {}
+  "dependencies": {
+    "@types/node": "^18.0.6",
+    "eslint": "^8.20.0",
+    "i2c-bus": "^5.2.2",
+    "moment": "^2.29.4",
+    "pca9685": "^5.0.0",
+    "rollup": "^2.77.0",
+    "rollup-plugin-typescript2": "^0.32.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.7.4"
+  }
 }

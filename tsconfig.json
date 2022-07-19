@@ -1,0 +1,23 @@
+{
+    "ts-node": {
+        "require": [
+            "tsconfig-paths/register"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "outDir": "build",
+        "esModuleInterop": true,
+        "baseUrl": ".", // this must be specified if "paths" is specified.
+        "paths": {
+            "$lib/*": [
+                "src/lib/*"
+            ],
+        }
+    }
+}
